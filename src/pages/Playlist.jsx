@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Play, Pause, Heart, Clock, MoreHorizontal, Loader2 } from 'lucide-react';
+import { Play, Pause, Heart, Loader2 } from 'lucide-react';
 import { fetchPlaylist, setCurrentTrack, setIsPlaying, toggleLike, setPlaylist } from '../features/spotifySlice';
 import MusicControlPanel from '../components/MusicControlPanel';
 
@@ -63,7 +63,6 @@ export default function PlaylistView() {
 
   const tracks = currentPlaylist.tracks?.items || [];
   const totalDuration = tracks.reduce((acc, item) => acc + (item.track?.duration_ms || 0), 0);
-  console.log(currentPlaylist.tracks);
 
   return (
     <div className="bg-gradient-to-b from-[#535353] to-[#121212] min-h-screen text-white p-8 pb-24">
@@ -84,24 +83,6 @@ export default function PlaylistView() {
         </div>
       </div>
 
-      <div className="flex items-center gap-8 mb-8">
-        <button
-          onClick={() => handlePlayPause(tracks[0]?.track)}
-          className="w-14 h-14 flex items-center justify-center bg-[#1ed760] rounded-full hover:scale-105 transition-transform"
-        >
-          {isPlaying && currentTrack?.id === tracks[0]?.track.id ?
-            <Pause fill="black" size={28} /> :
-            <Play fill="black" size={28} className="ml-1" />
-          }
-        </button>
-        <button className="hover:text-[#1ed760] transition-colors">
-          <Heart size={32} />
-        </button>
-        <button className="hover:text-[#1ed760] transition-colors">
-          <MoreHorizontal size={32} />
-        </button>
-      </div>
-
       <div className="w-full mb-24">
         <table className="w-full table-auto text-gray-200 text-sm">
           <thead>
@@ -110,14 +91,12 @@ export default function PlaylistView() {
               <th className="text-left pb-2">TITLE</th>
               <th className="text-left pb-2">ALBUM</th>
               <th className="text-left pb-2">DATE ADDED</th>
-              <th className="text-right pb-2 pr-8">
-                <Clock size={16} />
-              </th>
+              <th className="text-right pb-2 pr-8">ACTIONS</th>
             </tr>
           </thead>
 
           <tbody>
-            {tracks.length > 0 ? ( // tracks bo'sh emasligini tekshirish
+            {tracks.length > 0 ? (
               tracks.map((item, index) => {
                 const song = item?.track;
                 if (!song) return null;
@@ -125,7 +104,7 @@ export default function PlaylistView() {
                 const isCurrentlyPlaying = currentTrack?.id === song.id && isPlaying;
                 return (
                   <tr
-                    key={`${song.id}-${index}`} // Takrorlanuvchi id larni birlashtirib noyob key yaratish
+                    key={`${song.id}-${index}`}
                     className={`hover:bg-white/10 group rounded-md transition-colors ${isCurrentlyPlaying ? 'bg-white/20' : ''}`}
                   >
                     <td className="py-5 w-12">
